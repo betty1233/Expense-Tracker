@@ -5,6 +5,7 @@ export default function Frontpage() {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [type, setType] = useState("income");
+  const [editingId, setEditingId] =useState (null);
 
   // Dynamic state array to hold list of transactions
   const [transactions, setTransactions] = useState([
@@ -15,7 +16,27 @@ export default function Frontpage() {
   // Handle submitting new transaction
  const handleAddTransaction= (e)  => {
     e.preventDefault();
-    if (!title || !amount) return; // Prevent adding empty transactions
+    if (!title || !amount) return;
+    
+    if (editingId !== null) {
+      const updatedTransactions = transactions.map((item) => {
+        if (item.id === editingId) {
+          return {
+            ...item,
+            title: title.trim(),
+            amount: parseFloat(amount),
+            type,
+          };
+        }
+        return item;
+      });
+      setTransactions(updatedTransactions);
+      setEditingId(null);
+      setTitle("");
+      setAmount("");
+      setType("income");
+      return;
+    }
 
       const newTransaction = { 
         id: Date.now(),
@@ -28,6 +49,45 @@ export default function Frontpage() {
       setAmount("");
       setType("income");
   }
+
+   const handleDeleteTransaction =(id) =>{
+    const updatedTransactions = transactions.filter(
+      (item) => item.id !== id
+    );
+    setTransactions(updatedTransactions);
+  };
+
+   const handleEditTransaction =(id)=> {
+    const transactionToEdit = transactions.find((item)=> item.id === id);
+    if(transactionToEdit){
+      setTitle(transactionToEdit.title);
+      setAmount(transactionToEdit.amount.toString());
+      setType(transactionToEdit.type);
+      setEditingId(id);
+    }
+  };
+
+ const handlesaveEdit =(e)=>{
+  e.preventDefault();
+  
+  if(!title || !amount) return;
+  const updatedTransactions = transactions.map((item) => {
+    if(item.id === editingId){
+      return {
+        ...item,
+        title: title.trim(),
+        amount: parseFloat(amount),
+        type
+      };
+    }
+    return item;
+  });
+  setTransactions(updatedTransactions);
+  setTitle("");
+  setAmount("");
+  setType("income");
+  setEditingId(null);
+};
 
   const incomeTransactions = transactions.filter((item) => item.type === "income");
   const totalIncome = incomeTransactions.reduce((total, item) => total + item.amount, 0);
@@ -50,7 +110,7 @@ export default function Frontpage() {
         {/* Balance Card (Bigger & Highlighted) */}
         <div className="flex-[1.25] bg-white p-5 rounded-xl shadow-md text-center border-2 border-indigo-500">
           <h2 className="text-[11px] uppercase font-bold text-indigo-600">Balance</h2>
-          <p className="text-xl font-extrabold text-gray-900 mt-1">${(totalIncome - totalExpenses).toFixed(2)}</p>
+          <p className="text-xl font-extrabold text-gray-900 mt-1">${totalBalance.toFixed(2)}</p>
         </div>
 
         {/* Income Card */}
@@ -94,6 +154,15 @@ export default function Frontpage() {
               >
                 {item.type === "income" ? "+" : "-"}${Number(item.amount).toFixed(2)}
               </span>
+               <button
+            onClick={() => handleDeleteTransaction(item.id)}>
+            🗑️
+          </button>
+
+          <button onClick={() => handleEditTransaction(item.id)}
+            className="ml-2 text-gray-500 hover:text-gray-700 transition">
+             ✏️
+          </button>
             </li>
           ))}
         </ul>
@@ -101,9 +170,9 @@ export default function Frontpage() {
 
       {/* Add New Transaction Form */}
       <div className="bg-white rounded-xl shadow-md p-5 mt-4 w-full max-w-md mb-10">
-        <h2 className="text-base font-bold text-gray-800 mb-4">Add New Transaction</h2>
+        <h2 className="text-base font-bold text-gray-800 mb-4">{editingId !== null ? "Update Transaction" : "+ Add Transaction"}</h2>
 
-        <form onSubmit={handleAddTransaction} className="space-y-3.5">
+        <form onSubmit={editingId !== null ? handlesaveEdit : handleAddTransaction} className="space-y-3.5">
           {/* Title Input */}
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">Title</label>
@@ -149,7 +218,7 @@ export default function Frontpage() {
             type="submit"
             className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-semibold py-2.5 rounded-lg text-sm transition shadow-sm mt-1"
           >
-            + Add Transaction
+            {editingId !== null ? "Update Transaction" : "+ Add Transaction"}
           </button>
         </form>
       </div>
