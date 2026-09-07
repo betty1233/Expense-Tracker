@@ -1,23 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Frontpage() {
   // State for form inputs
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [type, setType] = useState("income");
-  const [editingId, setEditingId] =useState (null);
-
+  const [editingId, setEditingId] = useState(null);
+  const [category,setCategory ]= useState("Food");
+  const [filterCategory, setFilterCategory] = useState("All");
   // Dynamic state array to hold list of transactions
-  const [transactions, setTransactions] = useState([
-    { id: 1, title: "Salary", amount: 500, type: "income" },
-    { id: 2, title: "Lunch", amount: 15, type: "expense" },
-  ]);
+  const [transactions, setTransactions ]= useState(() =>{
+    const savedTransactions = JSON.parse(
+      localStorage.getItem("transactions")
+    );
+    return savedTransactions || [
+      { id: 1, title: "Salary", amount: 500, type: "income", category: "Food" },
+      { id: 2, title: "Lunch", amount: 15, type: "expense", category: "Food" },
+    ];
+  });
 
-  // Handle submitting new transaction
- const handleAddTransaction= (e)  => {
+  useEffect(() =>{
+  localStorage.setItem(
+    "transactions",
+    JSON.stringify(transactions)
+  );
+}, [transactions]);
+
+  // Single handler for submitting both new transactions and updates
+  const handleAddTransaction = (e) => {
     e.preventDefault();
     if (!title || !amount) return;
-    
+
+    // Handle Editing an Existing Transaction
     if (editingId !== null) {
       const updatedTransactions = transactions.map((item) => {
         if (item.id === editingId) {
@@ -26,6 +40,7 @@ export default function Frontpage() {
             title: title.trim(),
             amount: parseFloat(amount),
             type,
+            category,
           };
         }
         return item;
@@ -35,60 +50,57 @@ export default function Frontpage() {
       setTitle("");
       setAmount("");
       setType("income");
+      setCategory("Food");  
+      
       return;
     }
 
-      const newTransaction = { 
-        id: Date.now(),
-        title: title.trim(),
-        amount: parseFloat(amount),
-        type,
-      }
-      setTransactions([newTransaction, ...transactions]);
-      setTitle("");
-      setAmount("");
-      setType("income");
-  }
+    // Handle Adding a New Transaction
+    const newTransaction = {
+      id: Date.now(),
+      title: title.trim(),
+      amount: parseFloat(amount),
+      type,
+      category,
 
-   const handleDeleteTransaction =(id) =>{
+    };
+    setTransactions([newTransaction, ...transactions]);
+    setTitle("");
+    setAmount("");
+    setType("income");
+    setCategory("Food");
+  };
+
+  // Handle deleting a transaction
+  const handleDeleteTransaction = (id) => {
     const updatedTransactions = transactions.filter(
       (item) => item.id !== id
     );
     setTransactions(updatedTransactions);
   };
 
-   const handleEditTransaction =(id)=> {
-    const transactionToEdit = transactions.find((item)=> item.id === id);
-    if(transactionToEdit){
+  // Populate form with transaction data to edit
+  const handleEditTransaction = (id) => {
+    const transactionToEdit = transactions.find((item) => item.id === id);
+    if (transactionToEdit) {
       setTitle(transactionToEdit.title);
       setAmount(transactionToEdit.amount.toString());
       setType(transactionToEdit.type);
       setEditingId(id);
+      setCategory(transactionToEdit.category);
     }
   };
 
- const handlesaveEdit =(e)=>{
-  e.preventDefault();
-  
-  if(!title || !amount) return;
-  const updatedTransactions = transactions.map((item) => {
-    if(item.id === editingId){
-      return {
-        ...item,
-        title: title.trim(),
-        amount: parseFloat(amount),
-        type
-      };
-    }
-    return item;
-  });
-  setTransactions(updatedTransactions);
-  setTitle("");
-  setAmount("");
-  setType("income");
-  setEditingId(null);
-};
+  // Handle canceling edit mode
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setTitle("");
+    setAmount("");
+    setType("income");
+    setCategory("Food");
+  };
 
+  // Dynamic dashboard calculations
   const incomeTransactions = transactions.filter((item) => item.type === "income");
   const totalIncome = incomeTransactions.reduce((total, item) => total + item.amount, 0);
 
@@ -107,7 +119,7 @@ export default function Frontpage() {
 
       {/* Summary Dashboard Cards */}
       <div className="flex items-center gap-2.5 w-full max-w-md mt-6">
-        {/* Balance Card (Bigger & Highlighted) */}
+        {/* Balance Card */}
         <div className="flex-[1.25] bg-white p-5 rounded-xl shadow-md text-center border-2 border-indigo-500">
           <h2 className="text-[11px] uppercase font-bold text-indigo-600">Balance</h2>
           <p className="text-xl font-extrabold text-gray-900 mt-1">${totalBalance.toFixed(2)}</p>
@@ -122,7 +134,7 @@ export default function Frontpage() {
         {/* Expenses Card */}
         <div className="bg-white p-3.5 rounded-xl shadow-md text-center flex-1">
           <h2 className="text-[10px] uppercase font-semibold text-rose-600">Expenses</h2>
-          <p className="text-base font-bold text-rose-600 mt-1">${totalExpenses.toFixed(2)} </p>
+          <p className="text-base font-bold text-rose-600 mt-1">${totalExpenses.toFixed(2)}</p>
         </div>
       </div>
 
@@ -147,32 +159,46 @@ export default function Frontpage() {
                 <p className="font-semibold text-gray-800 text-sm">{item.title}</p>
                 <p className="text-[11px] text-gray-400 capitalize">{item.type}</p>
               </div>
-              <span
-                className={`font-bold text-sm ${
-                  item.type === "income" ? "text-emerald-600" : "text-rose-600"
-                }`}
-              >
-                {item.type === "income" ? "+" : "-"}${Number(item.amount).toFixed(2)}
-              </span>
-               <button
-            onClick={() => handleDeleteTransaction(item.id)}>
-            🗑️
-          </button>
 
-          <button onClick={() => handleEditTransaction(item.id)}
-            className="ml-2 text-gray-500 hover:text-gray-700 transition">
-             ✏️
-          </button>
+              <div className="flex items-center gap-2">
+                <span
+                  className={`font-bold text-sm ${
+                    item.type === "income" ? "text-emerald-600" : "text-rose-600"
+                  }`}
+                >
+                  {item.type === "income" ? "+" : "-"}${Number(item.amount).toFixed(2)}
+                </span>
+
+                {/* Delete Action Button */}
+                <button
+                  type="button"
+                  onClick={() => handleDeleteTransaction(item.id)}
+                  className="ml-2 text-gray-400 hover:text-rose-600 transition"
+                >
+                  🗑️
+                </button>
+
+                {/* Edit Action Button */}
+                <button
+                  type="button"
+                  onClick={() => handleEditTransaction(item.id)}
+                  className="text-gray-400 hover:text-indigo-600 transition"
+                >
+                  ✏️
+                </button>
+              </div>
             </li>
           ))}
         </ul>
       </div>
 
-      {/* Add New Transaction Form */}
+      {/* Add / Update Transaction Form */}
       <div className="bg-white rounded-xl shadow-md p-5 mt-4 w-full max-w-md mb-10">
-        <h2 className="text-base font-bold text-gray-800 mb-4">{editingId !== null ? "Update Transaction" : "+ Add Transaction"}</h2>
+        <h2 className="text-base font-bold text-gray-800 mb-4">
+          {editingId !== null ? "Update Transaction" : "+ Add Transaction"}
+        </h2>
 
-        <form onSubmit={editingId !== null ? handlesaveEdit : handleAddTransaction} className="space-y-3.5">
+        <form onSubmit={handleAddTransaction} className="space-y-3.5">
           {/* Title Input */}
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">Title</label>
@@ -185,9 +211,8 @@ export default function Frontpage() {
             />
           </div>
 
-          {/* Amount and Type Side-by-Side */}
+          {/* Amount and Type Inputs */}
           <div className="grid grid-cols-2 gap-3">
-            {/* Amount Input */}
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1">Amount ($)</label>
               <input
@@ -199,7 +224,6 @@ export default function Frontpage() {
               />
             </div>
 
-            {/* Type Select */}
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1">Type</label>
               <select
@@ -210,6 +234,25 @@ export default function Frontpage() {
                 <option value="income">Income</option>
                 <option value="expense">Expense</option>
               </select>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">
+                  Category
+                </label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full border border-gray-200 bg-gray-50 rounded-lg p-2.5 text-sm "
+                  >
+                  <option value="Food">Food</option>
+                  <option value="Transport">Transport</option>
+                  <option value="Bills">Bills</option>
+                  <option value="Shopping">Shopping</option>
+                  <option value="Entertainment">Entertainment</option>
+                  <option value="Other">Other</option>
+                </select>
+
+
+              </div>
             </div>
           </div>
 
@@ -220,6 +263,17 @@ export default function Frontpage() {
           >
             {editingId !== null ? "Update Transaction" : "+ Add Transaction"}
           </button>
+
+          {/* Cancel Button (Rendered only when editing) */}
+          {editingId !== null && (
+            <button
+              type="button"
+              onClick={handleCancelEdit}
+              className="w-full bg-gray-200 hover:bg-gray-300 active:scale-[0.99] text-gray-700 font-semibold py-2.5 rounded-lg text-sm transition shadow-sm mt-1"
+            >
+              Cancel
+            </button>
+          )}
         </form>
       </div>
     </div>
