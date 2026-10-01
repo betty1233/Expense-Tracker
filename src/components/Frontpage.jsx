@@ -335,11 +335,15 @@ export default function Frontpage() {
 
           <ul className="space-y-2.5">
 
-            {filteredTransactions.map((item) => (
-
-              <li
-                key={item.id}
-                className={`flex justify-between items-center bg-gray-50 hover:bg-gray-100 p-3 rounded-lg border-l-4 transition ${
+            {filteredTransactions.length === 0 ? (
+              <p className=" text-center text-gray-400 text-sm py-4">
+                No transactions found.
+              </p>
+            ) : (
+              filteredTransactions.map((item) => (
+                <li
+                  key={item.id}
+                  className={`flex justify-between items-center bg-gray-50 hover:bg-gray-100 p-3 rounded-lg border-l-4 transition ${
                   item.type === "income"
                     ? "border-emerald-500"
                     : "border-rose-500"
@@ -415,7 +419,7 @@ export default function Frontpage() {
 
               </li>
 
-            ))}
+            )))}
 
           </ul>
 
