@@ -44,7 +44,25 @@ export default function Frontpage() {
   const handleAddTransaction = (e) => {
     e.preventDefault();
 
-    if (!title || !amount) return;
+    if (!title.trim()) {
+      alert("Please enter a title.");
+      return;
+    }
+
+    if (!amount) {
+      alert("Please enter an amount.");
+      return;
+    }
+
+    if (parseFloat(amount) <= 0) {
+      alert("Please enter an amount greater than 0.");
+      return;
+    }
+
+    if (isNaN(parseFloat(amount))) {
+      alert("Please enter a valid number.");
+      return;
+    }
 
     // Handle editing an existing transaction
     if (editingId !== null) {
@@ -181,7 +199,18 @@ export default function Frontpage() {
           (item) => item.category === filterCategory
         );
 
+  const handleClearTransactions = () => {
+    const confirmClear = window.confirm(
+      "Are you sure you want to delete all transactions?"
+    );
+
+    if (confirmClear) {
+      setTransactions([]);
+    }
+  };
+
   return (
+
     <div className="min-h-screen bg-gray-100 flex flex-col items-center pt-10 px-4">
 
       {/* ================= HEADER ================= */}
@@ -279,17 +308,27 @@ export default function Frontpage() {
 
         <div className="bg-white rounded-xl shadow-md p-5 w-full">
 
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center justify-between">
 
-            <h2 className="text-base font-bold text-gray-800">
+            <h2 className="text-xl font-semibold">
               Recent Transactions
             </h2>
 
-            <span className="text-xs text-gray-400 font-medium">
-              {transactions.length} Items
-            </span>
+            {transactions.length> 0 && (
 
+            <button
+              onClick={handleClearTransactions}
+              className="text-sm text-red-500 hover:text-red-700"
+            >
+              Clear All
+            </button>
+            )}
           </div>
+
+
+          <span className="text-xs text-gray-400 font-medium">
+            {transactions.length} Items
+          </span>
 
 
           {/* Category Filter */}
@@ -391,7 +430,6 @@ export default function Frontpage() {
 
 
                   {/* Delete Button */}
-
                   <button
                     type="button"
                     onClick={() =>
@@ -418,13 +456,10 @@ export default function Frontpage() {
                 </div>
 
               </li>
-
-            )))}
-
+            ))
+          )}
           </ul>
-
         </div>
-
       </div>
 
 
@@ -442,7 +477,7 @@ export default function Frontpage() {
 
 
         <form
-          onSubmit={handleAddTransaction}
+          onSubmit={handleAddTransaction} noValidate
           className="space-y-3.5"
         >
 
@@ -479,6 +514,7 @@ export default function Frontpage() {
 
               <input
                 type="number"
+                min="0.01"
                 placeholder="0.00"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
