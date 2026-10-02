@@ -8,6 +8,8 @@ export default function Frontpage() {
   const [editingId, setEditingId] = useState(null);
   const [category, setCategory] = useState("Food");
   const [filterCategory, setFilterCategory] = useState("All");
+  const [sortOrder, setSortOrder] = useState("newest");
+  const [searchTerm, setSearchTerm] =useState("")
 
   // Dynamic state array to hold list of transactions
   const [transactions, setTransactions] = useState(() => {
@@ -54,13 +56,14 @@ export default function Frontpage() {
       return;
     }
 
-    if (parseFloat(amount) <= 0) {
-      alert("Please enter an amount greater than 0.");
+    const numericAmount = parseFloat(amount);
+    if (isNaN(numericAmount)){
+      alert("Please enter a valid number.");
       return;
     }
 
-    if (isNaN(parseFloat(amount))) {
-      alert("Please enter a valid number.");
+    if (numericAmount<=0){
+      alert("Please enter an amount greater than 0.");
       return;
     }
 
@@ -71,7 +74,7 @@ export default function Frontpage() {
           return {
             ...item,
             title: title.trim(),
-            amount: parseFloat(amount),
+            amount: numericAmount,
             type,
             category,
           };
@@ -94,10 +97,10 @@ export default function Frontpage() {
     const newTransaction = {
       id: Date.now(),
       title: title.trim(),
-      amount: parseFloat(amount),
+      amount: numericAmount ,
       type,
       category,
-      date: new Date().toLocaleDateString(), // Add a date property to the transaction
+      date: new Date().toISOString(), // Add a date property to the transaction
     };
 
     setTransactions([newTransaction, ...transactions]);
@@ -198,6 +201,18 @@ export default function Frontpage() {
       : transactions.filter(
           (item) => item.category === filterCategory
         );
+
+  const sortedTransactions = [...filteredTransactions].sort((a, b) => {
+    const dateA = new Date(a.date || a.id).getTime();
+    const dateB = new Date(b.date || b.id).getTime();
+
+    return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+  });
+
+  const searchTransactions = sortedTransactions.filter((item) =>
+    item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleClearTransactions = () => {
     const confirmClear = window.confirm(
@@ -329,57 +344,54 @@ export default function Frontpage() {
           <span className="text-xs text-gray-400 font-medium">
             {transactions.length} Items
           </span>
-
+          
+          <input
+            type="text"
+            placeholder="Search Transactions ..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className= "border border-gray-200 rounded-lg px-3 py-2 text-sm"
+            
+          />
 
           {/* Category Filter */}
 
-          <select
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-            className="w-full border border-gray-200 bg-gray-50 rounded-lg p-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition mb-3"
-          >
-
-            <option value="All">
-              All Categories
-            </option>
-
-            <option value="Food">
-              Food
-            </option>
-
-            <option value="Transport">
-              Transport
-            </option>
-
-            <option value="Bills">
-              Bills
-            </option>
-
-            <option value="Shopping">
-              Shopping
-            </option>
-
-            <option value="Entertainment">
-              Entertainment
-            </option>
-
-            <option value="Other">
-              Other
-            </option>
-
-          </select>
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="w-full border border-gray-200 bg-gray-50 rounded-lg p-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+            >
+              <option value="All">All Categories</option>
+              <option value="Food">Food</option>
+              <option value="Transport">Transport</option>
+              <option value="Bills">Bills</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Other">Other</option>
+            </select>
+          
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className="w-full border border-gray-200 bg-gray-50 rounded-lg p-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+            >
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+            </select>
+          </div>
 
 
           {/* Transaction List */}
 
           <ul className="space-y-2.5">
 
-            {filteredTransactions.length === 0 ? (
+            {searchTransactions.length === 0 ? (
               <p className=" text-center text-gray-400 text-sm py-4">
                 No transactions found.
               </p>
             ) : (
-              filteredTransactions.map((item) => (
+              searchTransactions.map((item) => (
                 <li
                   key={item.id}
                   className={`flex justify-between items-center bg-gray-50 hover:bg-gray-100 p-3 rounded-lg border-l-4 transition ${
@@ -405,7 +417,7 @@ export default function Frontpage() {
                     {item.category}
                   </p>
                   <p className="text-sm text-gray-500">
-                    {item.date}
+                    {new Date(item.date).toLocaleDateString()}
                   </p>
 
                 </div>
