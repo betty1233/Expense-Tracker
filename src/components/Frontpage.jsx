@@ -385,91 +385,72 @@ export default function Frontpage() {
           {/* Transaction List */}
 
           <ul className="space-y-2.5">
-
             {searchTransactions.length === 0 ? (
-              <p className=" text-center text-gray-400 text-sm py-4">
+              <li className="text-center text-gray-400 text-sm py-4">
                 No transactions found.
-              </p>
+              </li>
             ) : (
               searchTransactions.map((item) => (
                 <li
                   key={item.id}
                   className={`flex justify-between items-center bg-gray-50 hover:bg-gray-100 p-3 rounded-lg border-l-4 transition ${
-                  item.type === "income"
-                    ? "border-emerald-500"
-                    : "border-rose-500"
-                }`}
-              >
+                    item.type === "income"
+                      ? "border-emerald-500"
+                      : "border-rose-500"
+                  }`}
+                >
+                  {/* Transaction Information */}
+                  <div>
+                    <p className="font-semibold text-gray-800 text-sm">
+                      {item.title}
+                    </p>
 
-                {/* Transaction Information */}
+                    <p className="text-[11px] text-gray-400 capitalize">
+                      {item.type}
+                    </p>
 
-                <div>
+                    <p className="text-[11px] text-gray-500">
+                      {item.category}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {new Date(item.date || item.id).toLocaleDateString()}
+                    </p>
+                  </div>
 
-                  <p className="font-semibold text-gray-800 text-sm">
-                    {item.title}
-                  </p>
+                  {/* Amount + Buttons */}
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`font-bold text-sm ${
+                        item.type === "income"
+                          ? "text-emerald-600"
+                          : "text-rose-600"
+                      }`}
+                    >
+                      {item.type === "income" ? "+" : "-"}$
+                      {Number(item.amount).toFixed(2)}
+                    </span>
 
-                  <p className="text-[11px] text-gray-400 capitalize">
-                    {item.type}
-                  </p>
+                    {/* Delete Button */}
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteTransaction(item.id)}
+                      className="ml-2 text-gray-400 hover:text-rose-600 transition"
+                    >
+                      🗑️
+                    </button>
 
-                  <p className="text-[11px] text-gray-500">
-                    {item.category}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {new Date(item.date).toLocaleDateString()}
-                  </p>
-
-                </div>
-
-
-                {/* Amount + Buttons */}
-
-                <div className="flex items-center gap-2">
-
-                  <span
-                    className={`font-bold text-sm ${
-                      item.type === "income"
-                        ? "text-emerald-600"
-                        : "text-rose-600"
-                    }`}
-                  >
-
-                    {item.type === "income" ? "+" : "-"}$
-                    {Number(item.amount).toFixed(2)}
-
-                  </span>
-
-
-                  {/* Delete Button */}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleDeleteTransaction(item.id)
-                    }
-                    className="ml-2 text-gray-400 hover:text-rose-600 transition"
-                  >
-                    🗑️
-                  </button>
-
-
-                  {/* Edit Button */}
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleEditTransaction(item.id)
-                    }
-                    className="text-gray-400 hover:text-indigo-600 transition"
-                  >
-                    ✏️
-                  </button>
-
-                </div>
-
-              </li>
-            ))
-          )}
+                    {/* Edit Button */}
+                    <button
+                      type="button"
+                      onClick={() => handleEditTransaction(item.id)}
+                      className="text-gray-400 hover:text-indigo-600 transition"
+                    >
+                      ✏️
+                    </button>
+                  </div>
+                </li>
+              ))
+            )}
           </ul>
         </div>
       </div>
