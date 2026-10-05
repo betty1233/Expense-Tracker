@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import TransactionList from "./TransactionList"
+
+
 
 export default function Frontpage() {
   // State for form inputs
@@ -620,7 +623,7 @@ export default function Frontpage() {
         </form>
 
       </div>
-
+    <TransactionList transactions={searchedtransactions} />
     </div>
   );
 }
