@@ -397,7 +397,7 @@ export default function Frontpage() {
                 <li
                   key={item.id}
                   className={`flex justify-between items-center bg-gray-50 hover:bg-gray-100 p-3 rounded-lg border-l-4 transition ${
-                    item.type === "income"
+      item.type === "income"
                       ? "border-emerald-500"
                       : "border-rose-500"
                   }`}
@@ -623,7 +623,19 @@ export default function Frontpage() {
         </form>
 
       </div>
-    <TransactionList transactions={searchedTransactions} />
+    <TransactionList
+  transactions={transactions}
+  searchedTransactions={searchedTransactions}
+  searchTerm={searchTerm}
+  setSearchTerm={setSearchTerm}
+  filterCategory={filterCategory}
+  setFilterCategory={setFilterCategory}
+  sortOrder={sortOrder}
+  setSortOrder={setSortOrder}
+  handleClearTransactions={handleClearTransactions}
+  handleDeleteTransaction={handleDeleteTransaction}
+  handleEditTransaction={handleEditTransaction}
+/>
     </div>
   );
 }
