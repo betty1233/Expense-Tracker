@@ -212,7 +212,7 @@ export default function Frontpage() {
     return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
   });
 
-  const searchTransactions = sortedTransactions.filter((item) =>
+  const searchedTransactions = sortedTransactions.filter((item) =>
     item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -332,7 +332,7 @@ export default function Frontpage() {
               Recent Transactions
             </h2>
 
-            {transactions.length> 0 && (
+            {searchedTransactions.length > 0 && (
 
             <button
               onClick={handleClearTransactions}
@@ -388,12 +388,12 @@ export default function Frontpage() {
           {/* Transaction List */}
 
           <ul className="space-y-2.5">
-            {searchTransactions.length === 0 ? (
+            {searchedTransactions.length === 0 ? (
               <li className="text-center text-gray-400 text-sm py-4">
                 No transactions found.
               </li>
             ) : (
-              searchTransactions.map((item) => (
+              searchedTransactions.map((item) => (
                 <li
                   key={item.id}
                   className={`flex justify-between items-center bg-gray-50 hover:bg-gray-100 p-3 rounded-lg border-l-4 transition ${
@@ -623,7 +623,7 @@ export default function Frontpage() {
         </form>
 
       </div>
-    <TransactionList transactions={searchedtransactions} />
+    <TransactionList transactions={searchedTransactions} />
     </div>
   );
 }
