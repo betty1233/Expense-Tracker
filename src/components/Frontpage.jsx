@@ -148,15 +148,10 @@ export default function Frontpage() {
   };
 
   // Calculate total income
-  const incomeTransactions = transactions.filter(
-    (item) => item.type === "income"
-  );
-
-  const totalIncome = incomeTransactions.reduce(
-    (total, item) => total + item.amount,
-    0
-  );
-
+ // Calculate total income
+const totalIncome = transactions
+  .filter((item) => item.type === "income")
+  .reduce((total, item) => total + item.amount, 0);
   // Calculate total expenses
   const expenseTransactions = transactions.filter(
     (item) => item.type === "expense"
@@ -321,185 +316,122 @@ export default function Frontpage() {
 
         </div>
 
+        {/* ================= ADD / UPDATE FORM ================= */}
 
-        
-      {/* ================= ADD / UPDATE FORM ================= */}
+        <div className="bg-white rounded-xl shadow-md p-5 mt-6 w-full max-w-md mb-10">
 
-      <div className="bg-white rounded-xl shadow-md p-5 mt-6 w-full max-w-md mb-10">
+          <h2 className="text-base font-bold text-gray-800 mb-4">
+            {editingId !== null ? "Update Transaction" : "+ Add Transaction"}
+          </h2>
 
-        <h2 className="text-base font-bold text-gray-800 mb-4">
+          <form
+            onSubmit={handleAddTransaction}
+            noValidate
+            className="space-y-3.5"
+          >
 
-          {editingId !== null
-            ? "Update Transaction"
-            : "+ Add Transaction"}
-
-        </h2>
-
-
-        <form
-          onSubmit={handleAddTransaction} noValidate
-          className="space-y-3.5"
-        >
-
-          {/* Title Input */}
-
-          <div>
-
-            <label className="block text-xs font-semibold text-gray-600 mb-1">
-              Title
-            </label>
-
-            <input
-              type="text"
-              placeholder="e.g. Salary, Coffee"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full border border-gray-200 bg-gray-50 rounded-lg p-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-            />
-
-          </div>
-
-
-          {/* Amount + Type */}
-
-          <div className="grid grid-cols-2 gap-3">
-
-            {/* Amount */}
-
+            {/* Title Input */}
             <div>
-
               <label className="block text-xs font-semibold text-gray-600 mb-1">
-                Amount ($)
+                Title
               </label>
 
               <input
-                type="number"
-                min="0.01"
-                placeholder="0.00"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                type="text"
+                placeholder="e.g. Salary, Coffee"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 className="w-full border border-gray-200 bg-gray-50 rounded-lg p-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               />
-
             </div>
 
+            {/* Amount + Type */}
+            <div className="grid grid-cols-2 gap-3">
 
-            {/* Type */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">
+                  Amount ($)
+                </label>
 
+                <input
+                  type="number"
+                  min="0.01"
+                  placeholder="0.00"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  className="w-full border border-gray-200 bg-gray-50 rounded-lg p-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">
+                  Type
+                </label>
+
+                <select
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                  className="w-full border border-gray-200 bg-gray-50 rounded-lg p-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                >
+                  <option value="income">Income</option>
+                  <option value="expense">Expense</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Category */}
             <div>
-
               <label className="block text-xs font-semibold text-gray-600 mb-1">
-                Type
+                Category
               </label>
 
               <select
-                value={type}
-                onChange={(e) => setType(e.target.value)}
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
                 className="w-full border border-gray-200 bg-gray-50 rounded-lg p-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               >
-
-                <option value="income">
-                  Income
-                </option>
-
-                <option value="expense">
-                  Expense
-                </option>
-
+                <option value="Food">Food</option>
+                <option value="Transport">Transport</option>
+                <option value="Bills">Bills</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Other">Other</option>
               </select>
-
             </div>
 
-          </div>
-
-
-          {/* Category */}
-
-          <div>
-
-            <label className="block text-xs font-semibold text-gray-600 mb-1">
-              Category
-            </label>
-
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full border border-gray-200 bg-gray-50 rounded-lg p-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-            >
-
-              <option value="Food">
-                Food
-              </option>
-
-              <option value="Transport">
-                Transport
-              </option>
-
-              <option value="Bills">
-                Bills
-              </option>
-
-              <option value="Shopping">
-                Shopping
-              </option>
-
-              <option value="Entertainment">
-                Entertainment
-              </option>
-
-              <option value="Other">
-                Other
-              </option>
-
-            </select>
-
-          </div>
-
-
-          {/* Submit Button */}
-
-          <button
-            type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-semibold py-2.5 rounded-lg text-sm transition shadow-sm mt-1"
-          >
-
-            {editingId !== null
-              ? "Update Transaction"
-              : "+ Add Transaction"}
-
-          </button>
-
-
-          {/* Cancel Button */}
-
-          {editingId !== null && (
-
             <button
-              type="button"
-              onClick={handleCancelEdit}
-              className="w-full bg-gray-200 hover:bg-gray-300 active:scale-[0.99] text-gray-700 font-semibold py-2.5 rounded-lg text-sm transition shadow-sm mt-1"
+              type="submit"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-semibold py-2.5 rounded-lg text-sm transition shadow-sm mt-1"
             >
-              Cancel
+              {editingId !== null ? "Update Transaction" : "+ Add Transaction"}
             </button>
 
-          )}
-
-        </form>
-
+            {editingId !== null && (
+              <button
+                type="button"
+                onClick={handleCancelEdit}
+                className="w-full bg-gray-200 hover:bg-gray-300 active:scale-[0.99] text-gray-700 font-semibold py-2.5 rounded-lg text-sm transition shadow-sm mt-1"
+              >
+                Cancel
+              </button>
+            )}
+          </form>
+        </div>
       </div>
-    <TransactionList
-  transactions={transactions}
-  searchedTransactions={searchedTransactions}
-  searchTerm={searchTerm}
-  setSearchTerm={setSearchTerm}
-  filterCategory={filterCategory}
-  setFilterCategory={setFilterCategory}
-  sortOrder={sortOrder}
-  setSortOrder={setSortOrder}
-  handleClearTransactions={handleClearTransactions}
-  handleDeleteTransaction={handleDeleteTransaction}
-  handleEditTransaction={handleEditTransaction}
-/>
+
+      <TransactionList
+        transactions={transactions}
+        searchedTransactions={searchedTransactions}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        filterCategory={filterCategory}
+        setFilterCategory={setFilterCategory}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+        handleClearTransactions={handleClearTransactions}
+        handleDeleteTransaction={handleDeleteTransaction}
+        handleEditTransaction={handleEditTransaction}
+      />
     </div>
   );
 }
