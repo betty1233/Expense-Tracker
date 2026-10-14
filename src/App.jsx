@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -6,7 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
-import { useState } from "react";
+
 
 export default function App() {
   const [transactions, setTransactions] = useState(() => {
@@ -41,8 +40,12 @@ useEffect(() => {
       <Routes>
         <Route path="/" element={<Dashboard />} />
 
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/transactions" element={<Transactions />} />
+        <Route path="/dashboard" element={<Dashboard  
+                                        transactions={transactions} 
+                                        setTransactions={setTransactions}/>} />
+        <Route path="/transactions" element={<Transactions 
+                                                    transactions={transactions} 
+                                                    setTransactions={setTransactions}/>} />
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>
