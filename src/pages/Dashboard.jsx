@@ -2,6 +2,9 @@ import Frontpage from "../components/Frontpage"
 
 export default function Dashboard() {
     return(
-       <Frontpage />
+       <Frontpage 
+            transactions={transactions}
+            setTransactions={setTransactions}
+        />
     );
 }

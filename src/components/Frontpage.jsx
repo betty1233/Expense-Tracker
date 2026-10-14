@@ -3,7 +3,10 @@ import TransactionList from "./TransactionList"
 
 
 
-export default function Frontpage() {
+export default function Frontpage( {
+  transactions,
+  setTransactions,
+}) {
   // State for form inputs
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
