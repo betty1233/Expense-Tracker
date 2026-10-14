@@ -17,7 +17,7 @@ export default function TransactionList({
       <div className="flex items-center justify-between">
 
         <h2 className="text-xl font-semibold">
-          Recent Transactions
+          All Transactions
         </h2>
 
         {searchedTransactions.length > 0 && (
