@@ -34,19 +34,28 @@ export default function App() {
 useEffect(() => {
   localStorage.setItem("transactions", JSON.stringify(transactions));
 }, [transactions]);
+
+const [transactionToEdit, setTransactionToEdit] = useState(null);
   return (
     <BrowserRouter>
       <Navbar/>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<Dashboard
+                                      transactions={transactions}
+                                      setTransactions={setTransactions}
+                                      transactionToEdit={transactionToEdit}
+                                      setTransactionToEdit={setTransactionToEdit}
+                                         />} />
 
         <Route path="/dashboard" element={<Dashboard  
                                         transactions={transactions} 
                                         setTransactions={setTransactions}/>} />
         <Route path="/transactions" element={<Transactions 
                                                     transactions={transactions} 
-                                                    setTransactions={setTransactions}/>} />
-        <Route path="/analytics" element={<Analytics />} />
+                                                    setTransactions={setTransactions}
+                                                    setTransactionToEdit={setTransactionToEdit}/>} />
+        <Route path="/analytics" element={<Analytics 
+                                                  transactions={transactions} />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>
     </BrowserRouter>

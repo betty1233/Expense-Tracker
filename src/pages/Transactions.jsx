@@ -5,6 +5,8 @@ import TransactionList from "../components/TransactionList";
 export default function Transactions({
   transactions,
   setTransactions,
+  setTransactionToEdit,
+
 }) {
   // Search, filter, and sorting state
   const [searchTerm, setSearchTerm] = useState("");
@@ -74,8 +76,9 @@ export default function Transactions({
             current.filter((item) => item.id !== id)
           );
         }}
-        handleEditTransaction={() => {
-          alert("Editing from this page is not available yet.");
+        handleEditTransaction={(id) => {
+          setTransactionToEdit(id);
+          window.location.href ="/dashboard"
         }}
       />
     </div>

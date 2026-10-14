@@ -6,6 +6,9 @@ import TransactionList from "./TransactionList"
 export default function Frontpage( {
   transactions,
   setTransactions,
+  transactionToEdit,
+  setTransactionToEdit,
+
 }) {
   // State for form inputs
   const [title, setTitle] = useState("");
@@ -110,6 +113,14 @@ export default function Frontpage( {
       setCategory(transactionToEdit.category);
     }
   };
+
+  useEffect (() =>{
+    if (transactionToEdit !== null && transactionToEdit !== undefined){
+      handleEditTransaction(transactionToEdit),
+      setTransactionToEdit(null);
+    }
+  },[transactionToEdit]
+);
 
   // Handle canceling edit mode
   const handleCancelEdit = () => {
