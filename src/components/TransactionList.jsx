@@ -37,10 +37,10 @@ export default function TransactionList({
 
       <input
         type="text"
-        placeholder="Search Transactions ..."
+        placeholder=""
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
+        className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline foucs:ring-2 focus:ring-indigo-500"
       />
 
       {/* Category Filter */}
