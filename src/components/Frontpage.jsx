@@ -14,36 +14,6 @@ export default function Frontpage() {
   const [sortOrder, setSortOrder] = useState("newest");
   const [searchTerm, setSearchTerm] =useState("")
 
-  // Dynamic state array to hold list of transactions
-  const [transactions, setTransactions] = useState(() => {
-    const savedTransactions = JSON.parse(
-      localStorage.getItem("transactions")
-    );
-
-    return (
-      savedTransactions || [
-        {
-          id: 1,
-          title: "Salary",
-          amount: 500,
-          type: "income",
-          category: "Food",
-        },
-        {
-          id: 2,
-          title: "Lunch",
-          amount: 15,
-          type: "expense",
-          category: "Food",
-        },
-      ]
-    );
-  });
-
-  // Save transactions to localStorage
-  useEffect(() => {
-    localStorage.setItem("transactions", JSON.stringify(transactions));
-  }, [transactions]);
 
   // Handle adding and updating transactions
   const handleAddTransaction = (e) => {
