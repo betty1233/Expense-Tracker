@@ -47,9 +47,11 @@ const [transactionToEdit, setTransactionToEdit] = useState(null);
                                       setTransactionToEdit={setTransactionToEdit}
                                          />} />
 
-        <Route path="/dashboard" element={<Dashboard  
-                                        transactions={transactions} 
-                                        setTransactions={setTransactions}/>} />
+        <Route path="/dashboard" element={<Dashboard
+                transactions={transactions}
+                setTransactions={setTransactions}
+                transactionToEdit={transactionToEdit}
+                setTransactionToEdit={setTransactionToEdit}/>} />
         <Route path="/transactions" element={<Transactions 
                                                     transactions={transactions} 
                                                     setTransactions={setTransactions}

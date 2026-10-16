@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import TransactionList from "./TransactionList"
 
 
@@ -10,12 +10,18 @@ export default function Frontpage( {
   setTransactionToEdit,
 
 }) {
+  const transactionBeingEdited = transactions.find(
+    (item) => item.id === transactionToEdit
+  );
+
   // State for form inputs
-  const [title, setTitle] = useState("");
-  const [amount, setAmount] = useState("");
-  const [type, setType] = useState("income");
-  const [editingId, setEditingId] = useState(null);
-  const [category, setCategory] = useState("Food");
+  const [title, setTitle] = useState(() => transactionBeingEdited?.title ?? "");
+  const [amount, setAmount] = useState(() =>
+    transactionBeingEdited ? String(transactionBeingEdited.amount) : ""
+  );
+  const [type, setType] = useState(() => transactionBeingEdited?.type ?? "income");
+  const [editingId, setEditingId] = useState(() => transactionBeingEdited?.id ?? null);
+  const [category, setCategory] = useState(() => transactionBeingEdited?.category ?? "Food");
   const [filterCategory, setFilterCategory] = useState("All");
   const [sortOrder, setSortOrder] = useState("newest");
   const [searchTerm, setSearchTerm] =useState("")
@@ -68,6 +74,7 @@ export default function Frontpage( {
       setAmount("");
       setType("income");
       setCategory("Food");
+      setTransactionToEdit(null);
 
       return;
     }
@@ -114,14 +121,6 @@ export default function Frontpage( {
     }
   };
 
-  useEffect (() =>{
-    if (transactionToEdit !== null && transactionToEdit !== undefined){
-      handleEditTransaction(transactionToEdit),
-      setTransactionToEdit(null);
-    }
-  },[transactionToEdit]
-);
-
   // Handle canceling edit mode
   const handleCancelEdit = () => {
     setEditingId(null);
@@ -129,6 +128,7 @@ export default function Frontpage( {
     setAmount("");
     setType("income");
     setCategory("Food");
+    setTransactionToEdit(null);
   };
 
   // Calculate total income
