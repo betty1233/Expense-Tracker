@@ -115,15 +115,15 @@ export default function Analytics({ transactions = [] }) {
     })}`;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6 text-gray-900 dark:bg-gray-900 dark:text-white">
       <div className="mx-auto max-w-6xl">
 
         {/* Page heading */}
        {/* Page heading */}
 <div className="mb-8">
-  <h1 className="text-3xl font-bold text-gray-800">
-    Analytics
-  </h1>
+  <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+  Analytics
+</h1>
 
   <p className="mt-2 text-gray-500">
     Understand your income, expenses, and spending habits.
@@ -166,7 +166,7 @@ export default function Analytics({ transactions = [] }) {
         {/* Summary cards */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
 
-          <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+          <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <p className="text-sm font-medium text-gray-500">
               Total Income
             </p>

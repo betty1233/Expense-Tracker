@@ -1,8 +1,6 @@
 import { useState } from "react";
 import TransactionList from "./TransactionList"
 
-
-
 export default function Frontpage( {
   transactions,
   setTransactions,
@@ -10,6 +8,20 @@ export default function Frontpage( {
   setTransactionToEdit,
 
 }) {
+  const [currency] = useState(() => {
+    try {
+      return localStorage.getItem("currency") || "USD";
+    } catch {
+      return "USD";
+    }
+  });
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: currency,
+    }).format(amount);
+  };
   const transactionBeingEdited = transactions.find(
     (item) => item.id === transactionToEdit
   );
@@ -208,7 +220,7 @@ const totalIncome = transactions
 
   return (
 
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center pt-10 px-4">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center pt-10 px-4 dark:bg-gray-900 dark:text-white">
 
       {/* ================= HEADER ================= */}
 
@@ -234,31 +246,31 @@ const totalIncome = transactions
           </h2>
 
           <p className="text-xl font-extrabold text-gray-900 mt-1">
-            ${totalBalance.toFixed(2)}
+           {formatCurrency(totalBalance)}
           </p>
         </div>
 
 
         {/* Income Card */}
-        <div className="flex-1 bg-white p-3.5 rounded-xl shadow-md text-center">
+        <div className="flex-1 bg-white p-3.5 rounded-xl shadow-md text-center dark:bg-gray-800">
           <h2 className="text-[10px] uppercase font-semibold text-emerald-600">
             Income
           </h2>
 
           <p className="text-base font-bold text-emerald-600 mt-1">
-            ${totalIncome.toFixed(2)}
+           {formatCurrency(totalIncome)}
           </p>
         </div>
 
 
         {/* Expenses Card */}
-        <div className="bg-white p-3.5 rounded-xl shadow-md text-center flex-1">
+        <div className="bg-white p-3.5 rounded-xl shadow-md text-center flex-1 dark:bg-gray-800">
           <h2 className="text-[10px] uppercase font-semibold text-rose-600">
             Expenses
           </h2>
 
           <p className="text-base font-bold text-rose-600 mt-1">
-            ${totalExpenses.toFixed(2)}
+           {formatCurrency(totalExpenses)}
           </p>
         </div>
 
@@ -271,7 +283,7 @@ const totalIncome = transactions
 
         {/* ================= CATEGORY SPENDING ================= */}
 
-        <div className="bg-indigo-50 p-5 rounded-2xl shadow-lg border border-indigo-200 w-full">
+        <div className="bg-indigo-50 p-5 rounded-2xl shadow-lg border border-indigo-200 w-full dark:bg-gray-900 dark:text-white">
 
           <h2 className="text-xl font-bold text-indigo-800 mb-4">
             Category Spending
@@ -290,7 +302,7 @@ const totalIncome = transactions
                 </span>
 
                 <span className="font-bold text-indigo-600 text-sm">
-                  ${item.total.toFixed(2)}
+                 {formatCurrency(item.total)}
                 </span>
 
               </div>
@@ -302,7 +314,7 @@ const totalIncome = transactions
 
         {/* ================= ADD / UPDATE FORM ================= */}
 
-        <div className="bg-white rounded-xl shadow-md p-5 mt-6 w-full max-w-md mb-10">
+        <div className="bg-white rounded-xl shadow-md p-5 mt-6 w-full max-w-md mb-10 dark:bg-gray-900 dark:text-white">
 
           <h2 className="text-base font-bold text-gray-800 mb-4">
             {editingId !== null ? "Update Transaction" : "+ Add Transaction"}

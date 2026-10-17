@@ -1,87 +1,32 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-
-export default function Settings() {
-  const [currency, setCurrency] = useState(() => 
-    localStorage.getItem("currency") || "USD");
-  const [theme, setTheme] = useState(() =>
-    localStorage.getItem("theme") || "Light"
-  );
-
+export default function Settings({ theme, setTheme }) {
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="mx-auto max-w-4xl">
-        <h1 className="text-3xl font-bold text-gray-800">
+    <div className="min-h-screen bg-gray-50 p-6 text-gray-900 dark:bg-gray-900 dark:text-white">
+      <div className="mx-auto max-w-xl">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
           Settings
         </h1>
 
-        <p className="mt-2 text-gray-500">
-          Customize your Expense Tracker.
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
+          Customize how the app looks and behaves.
         </p>
 
-        {/* Appearance settings */}
-        <div className="mt-8 rounded-xl bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-gray-800">
-            Appearance
-          </h2>
+        <div className="mt-6 rounded-xl bg-white p-5 shadow-md dark:bg-gray-800">
+          <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200">
+            Theme
+          </label>
 
-          <div className="mt-5 flex items-center justify-between gap-4">
-            <label htmlFor="theme" className="text-gray-700">
-              Theme
-            </label>
-
-            <select
-              id="theme"
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2"
-            >
-              <option value="Light">Light</option>
-              <option value="Dark">Dark</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Currency settings */}
-        <div className="mt-6 rounded-xl bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-gray-800">
-            Currency</h2>
-
-          <div className="mt-5 flex items-center justify-between gap-4">
-            <label htmlFor="currency" className="text-gray-700">
-              Display currency
-            </label>
-
-            <select
-              id="currency"
-              value={currency}
-              onChange={(e) => {
-                const newCurrency = e.target.value;
-                setCurrency(newCurrency);
-                localStorage.setItem("currency", newCurrency);
-}}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2"
-            >
-              <option value="USD">US Dollar ($)</option>
-              <option value="ETB">Ethiopian Birr (Br)</option>
-              <option value="EUR">Euro (€)</option>
-              <option value="GBP">British Pound (£)</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <div className="mt-6 rounded-xl bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-gray-800">
-            Navigation
-          </h2>
-
-          <Link
-            to="/dashboard"
-            className="mt-4 inline-block rounded-lg bg-indigo-600 px-5 py-2 text-white hover:bg-indigo-700"
+          <select
+            value={theme}
+            onChange={(e) => {
+              const newTheme = e.target.value;
+              setTheme(newTheme);
+              localStorage.setItem("theme", newTheme);
+            }}
+            className="w-full rounded-lg border border-gray-200 bg-gray-50 p-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
           >
-            Back to Dashboard
-          </Link>
+            <option value="Light">Light</option>
+            <option value="Dark">Dark</option>
+          </select>
         </div>
       </div>
     </div>
