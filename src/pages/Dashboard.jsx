@@ -7,6 +7,7 @@ export default function Dashboard({
     setTransactionToEdit,
 }) {
     return(
+    
        <Frontpage 
             transactions={transactions}
             setTransactions={setTransactions}
