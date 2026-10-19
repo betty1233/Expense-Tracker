@@ -438,7 +438,7 @@ export default function Frontpage({
                           type="number"
                           min="0.01"
                           step="any"
-                          placeholder="0.00"
+                          placeholder=""
                           value={amount}
                           onChange={(event) => setAmount(event.target.value)}
                           className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-400 dark:focus:bg-slate-800"
